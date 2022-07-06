@@ -258,7 +258,7 @@ namespace Streamish.Repositories
                                         
                                         FROM Video v 
                                         JOIN UserProfile up ON v.UserProfileId = up.Id
-                                        LEFT JOIN Comment c on c.VideoId = v.id
+                                        LEFT JOIN Comment c ON c.VideoId = v.id
                                         WHERE v.Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
 
