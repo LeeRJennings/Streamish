@@ -140,10 +140,13 @@ namespace Streamish.Repositories
                 {
                     cmd.CommandText = @"SELECT up.Id, up.Name, up.Email, up.ImageUrl, up.DateCreated AS UserDateCreated,
                                                
-                                               v.Id AS VideoId, v.Title, v.Description, v.Url, v.DateCreated AS VideoDateCreated
+                                               v.Id AS VideoId, v.Title, v.Description, v.Url, v.DateCreated AS VideoDateCreated,
+
+                                               c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserId
                                         
                                         FROM UserProfile up
                                         JOIN Video v ON v.UserProfileId = up.Id
+                                        LEFT JOIN Comment c ON c.VideoId = v.Id
                                         WHERE up.Id = @id";
                     DbUtils.AddParameter(cmd, "@id", id);
 
@@ -169,15 +172,34 @@ namespace Streamish.Repositories
                             }
                             if (DbUtils.IsNotDbNull(reader, "VideoId"))
                             {
-                                userProfile.Videos.Add(new Video()
+                                var videoId = DbUtils.GetInt(reader, "VideoId");
+
+                                var existingVideo = userProfile.Videos.FirstOrDefault(x => x.Id == videoId);
+                                if (existingVideo == null)
                                 {
-                                    Id = DbUtils.GetInt(reader, "VideoId"),
-                                    Title = DbUtils.GetString(reader, "Title"),
-                                    Description = DbUtils.GetString(reader, "Description"),
-                                    Url = DbUtils.GetString(reader, "Url"),
-                                    DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
-                                    UserProfileId = userId,
-                                });
+                                    existingVideo = new Video()
+                                    {
+                                        Id = videoId,
+                                        Title = DbUtils.GetString(reader, "Title"),
+                                        Description = DbUtils.GetString(reader, "Description"),
+                                        Url = DbUtils.GetString(reader, "Url"),
+                                        DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
+                                        UserProfileId = userId,
+                                        Comments = new List<Comment>(),
+                                    };
+
+                                    userProfile.Videos.Add(existingVideo);
+                                }
+                                if (DbUtils.IsNotDbNull(reader, "CommentId"))
+                                {
+                                    existingVideo.Comments.Add(new Comment()
+                                    {
+                                        Id = DbUtils.GetInt(reader, "CommentId"),
+                                        Message = DbUtils.GetString(reader, "Message"),
+                                        VideoId = videoId,
+                                        UserProfileId = DbUtils.GetInt(reader, "CommentUserId")
+                                    });
+                                }
                             }
                         }
                         return userProfile;
