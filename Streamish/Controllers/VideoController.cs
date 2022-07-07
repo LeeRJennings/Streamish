@@ -83,7 +83,7 @@ namespace Streamish.Controllers
         }
 
         [HttpGet("hottest")]
-        public IActionResult SearchByDate(DateTime q)
+        public IActionResult Search(DateTime q)
         {
             return Ok(_videoRepository.SearchByDate(q));
         }
