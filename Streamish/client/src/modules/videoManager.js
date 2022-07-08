@@ -10,7 +10,7 @@ export const getAllVideosWithComments = () => {
         .then((res) => res.json())
 }
 
-export const searchVideosByTitle = (query) => {
+export const searchVideos = (query) => {
     return fetch(`${baseUrl}/search?q=${query}`)
         .then((res) => res.json())
 }
