@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Video from "./Video";
-import { getAllVideos, getAllVideosWithComments, searchVideosByTitle } from "../modules/videoManager";
+import { VideoForm } from "./VideoForm";
+import { getAllVideos, getAllVideosWithComments, searchVideos } from "../modules/videoManager";
 
 const VideoList = () => {
   const [videos, setVideos] = useState([]);
@@ -12,7 +13,7 @@ const VideoList = () => {
 
   const handleVideoSearch = (e) => {
     if (e.keyCode === 13) {
-      searchVideosByTitle(e.target.value)
+      searchVideos(e.target.value)
       .then(videos => setVideos(videos))
     }
   }
@@ -22,7 +23,11 @@ const VideoList = () => {
   }, []);
 
   return (
+    <>
+    <VideoForm getVideos={getVideos}/>
+    <br/>
     <div className="container">
+      <h4>Search Videos</h4>
       <input type="text" id="videoSearch" placeholder="search videos here..." onKeyUp={handleVideoSearch} />
       <div className="row justify-content-center">
         {videos.map((video) => (
@@ -30,6 +35,7 @@ const VideoList = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 
