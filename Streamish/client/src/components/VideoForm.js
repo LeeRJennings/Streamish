@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { addVideo } from "../modules/videoManager";
+import { useNavigate } from "react-router-dom"
 
-export const VideoForm = ({ getVideos }) => {
+export const VideoForm = () => {
     const [video, setVideo] = useState({
         title: "",
         url: "",
         description: ""
     })
+
+    const navigate = useNavigate();
 
     const handleControlledInputChange = (e) => {
         const newVideo = {...video}
@@ -21,7 +24,9 @@ export const VideoForm = ({ getVideos }) => {
             window.alert('bruh, you gotta have a Title and URL. Description is optional.')
         } else {
             addVideo(video)
-            getVideos()
+            .then((p) => {
+                navigate("/") 
+            })
         }
 
     }
@@ -51,3 +56,5 @@ export const VideoForm = ({ getVideos }) => {
         </form>
     )
 }
+
+export default VideoForm;

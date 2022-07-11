@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Video from "./Video";
-import { VideoForm } from "./VideoForm";
 import { getAllVideos, getAllVideosWithComments, searchVideos } from "../modules/videoManager";
 
 const VideoList = () => {
@@ -24,8 +23,6 @@ const VideoList = () => {
 
   return (
     <>
-    <VideoForm getVideos={getVideos}/>
-    <br/>
     <div className="container">
       <h4>Search Videos</h4>
       <input type="text" id="videoSearch" placeholder="search videos here..." onKeyUp={handleVideoSearch} />
